@@ -2,25 +2,40 @@ name: Build image and push
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "test" ]
   pull_request:
-    branches: [ "main" ]
-
+    branches: [ "test" ]
 
 jobs:
 
   build:
 
     runs-on: ubuntu-latest
+    permissions: read-all
 
     steps:
+    - run: |
+        sudo chmod -R ugo+rwX .
+        
     - uses: actions/checkout@v3
 
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-demo-image:${{ github.sha }}
+      run: docker build . --file Dockerfile --tag scanner:2403.2.15
 
+    - name: Login to Aqua registry and pull scanner
+      run: |
+        echo "Logging into Aqua registry"
+        docker login registry.aquasec.com -u alexandru.stefanuti@eviden.com -p useForAqua
+        echo "Pulling scanner image"
+        docker pull registry.aquasec.com/scanner:2403.2.15
+
+    - name: Run Docker
+      run: |
+        echo "Running Aqua Scanner"
+        docker run registry.aquasec.com/scanner:2403.2.15 scan -H https://c986799046-d.cloud.aquasec.com -A 65168de54a7f060a94b55e29f345dddacedaaaaf --architecture arm --registry "Docker Hub" alpine:latest
+        
     - name: Tag image with Registry
-      run: docker tag my-demo-image:${{ github.sha }} my-registry/my-demo-image:${{ github.sha }}
+      run: docker tag scanner:2403.2.15 registry.aquasec.com/scanner:2403.2.15
 
-    - name: Push to Registry
-      run: echo "docker push my-registry/my-demo-image:${{ github.sha }}"
+    - name: Push to Registry #something
+      run: echo "docker push registry.aquasec.com/scanner:2403.2.15"
