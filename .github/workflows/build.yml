@@ -33,7 +33,7 @@ jobs:
     - name: Run Docker
       run: |
         echo "Running Aqua Scanner"
-        docker run registry.aquasec.com/scanner:2403.2.15 scan -H https://c986799046-d.cloud.aquasec.com -A 65168de54a7f060a94b55e29f345dddacedaaaaf --architecture arm --registry "Docker Hub" alpine:latest
+        docker run registry.aquasec.com/scanner:2403.2.15 scan -H https://c986799046-d.cloud.aquasec.com -A 65168de54a7f060a94b55e29f345dddacedaaaaf --registry "Docker Hub" alpine:latest
         
     - name: Tag image with Registry
       run: docker tag scanner:2403.2.15 registry.aquasec.com/scanner:2403.2.15
