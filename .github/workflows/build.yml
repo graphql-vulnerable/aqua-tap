@@ -38,4 +38,4 @@ jobs:
       run: docker tag scanner:2403.2.15 registry.aquasec.com/scanner:2403.2.15
 
     - name: Push to Registry #something
-      run: echo "docker push registry.aquasec.com/scanner:2403.2.15"
+      run: docker push registry.aquasec.com/scanner:2403.2.15
